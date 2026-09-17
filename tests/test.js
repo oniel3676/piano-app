@@ -110,16 +110,16 @@ function ok(name, cond, extra){ results.push((cond?'PASS ':'FAIL ')+name+(extra?
   await study('btnMixed', 'Claves mixtas', async ()=>{ const c1 = await page.evaluate(()=>window.__cm.G.cfg.clef); results.push('info clave mixta ronda 1: '+c1); });
   // repaso pendiente: tras repasar los fallos hoy no queda nada pendiente (comportamiento correcto)
   await page.click('#tabbar button[data-tab="tabStudy"]'); await page.waitForTimeout(200);
-  const badge0 = await page.evaluate(()=>{ const b=document.querySelector('#btnSrs .badge'); return b?b.textContent:null; });
-  ok('repaso: nada pendiente tras acertar todo hoy', badge0===null, 'badge='+badge0);
+  const badge0 = await page.evaluate(()=>{ const b=document.querySelector('#btnSrs .k'); return b?b.textContent:null; });
+  ok('repaso: nada pendiente tras acertar todo hoy', badge0==='', 'aviso='+JSON.stringify(badge0));
   await page.click('#btnSrs'); await page.waitForTimeout(300);
   ok('repaso: aviso en vez de partida', await page.isVisible('#toast') && await page.isHidden('#game'), await page.textContent('#toast'));
   // simulamos que pasan los días: tres notas vencen hoy
   await page.evaluate(()=>{ const s = JSON.parse(localStorage.getItem('cm.srs')); const t = new Date(); t.setDate(t.getDate()-3); const k = t.toISOString().slice(0,10); ['E4','G4','B4'].forEach(n=>{ s.treble[n] = {b:2, due:k}; }); localStorage.setItem('cm.srs', JSON.stringify(s)); });
   await page.reload(); await page.waitForTimeout(600); await page.evaluate(()=>{ window.__cm.base = c => c==='treble' ? 30 : 18; });
   await page.click('#tabbar button[data-tab="tabStudy"]'); await page.waitForTimeout(200);
-  const badge = await page.evaluate(()=>{ const b=document.querySelector('#btnSrs .badge'); return b?b.textContent:null; });
-  ok('repaso pendiente: insignia con el número de notas', badge==='3', 'badge='+badge);
+  const badge = await page.evaluate(()=>{ const b=document.querySelector('#btnSrs .k'); return b?b.textContent:null; });
+  ok('repaso pendiente: aviso con el número de notas', badge==='3 pendientes', 'aviso='+JSON.stringify(badge));
   await page.click('#btnSrs'); await page.waitForTimeout(500);
   ok('repaso pendiente arranca', await page.isVisible('#game'));
   ok('repaso pendiente completado', await answerAll());
