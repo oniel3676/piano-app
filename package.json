@@ -1,0 +1,1 @@
+{ "name": "clave-maestra", "version": "1.0.0", "private": true, "scripts": { "test": "node tests/test.js" }, "devDependencies": { "playwright": "^1.56.0" } }
